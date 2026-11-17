@@ -1,0 +1,610 @@
+/* ========== 增强样式：3D 画布 / 自定义光标 / 卡片倾斜 / 复制按钮 ========== */
+
+/* ---------- 3D 背景画布 ---------- */
+#scene3d {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.9;
+    transition: opacity 0.3s linear;
+}
+
+/* ---------- 自定义光标（桌面端）---------- */
+@media (hover: hover) and (pointer: fine) {
+    body { cursor: none; }
+    body a, body button { cursor: none; }
+
+    .cursor-dot,
+    .cursor-ring {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 10002;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .cursor-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--film-gold);
+    }
+
+    .cursor-ring {
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--film-gold-dim);
+        transition: width 0.25s ease, height 0.25s ease,
+                    border-color 0.25s ease, background 0.25s ease;
+    }
+
+    .cursor-ring.is-hover {
+        width: 52px;
+        height: 52px;
+        border-color: var(--film-gold);
+        background: var(--film-gold-glow);
+    }
+}
+
+/* ---------- 英雄区文字微光 ---------- */
+.hero h1 {
+    text-shadow: 0 0 40px rgba(201, 168, 108, 0.12);
+}
+
+.hero h1 em {
+    background: linear-gradient(120deg, var(--film-gold) 20%, #f0d9ae 50%, var(--film-gold) 80%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: goldShimmer 6s linear infinite;
+}
+
+@keyframes goldShimmer {
+    to { background-position: 200% center; }
+}
+
+/* ---------- 作品卡片 3D 倾斜 ---------- */
+.project-card {
+    transform-style: preserve-3d;
+    will-change: transform;
+    position: relative;
+}
+
+.project-card .card-shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+        500px circle at var(--shine-x, 50%) var(--shine-y, 50%),
+        rgba(201, 168, 108, 0.12),
+        transparent 45%
+    );
+    z-index: 2;
+}
+
+.project-card:hover .card-shine {
+    opacity: 1;
+}
+
+.project-visual img {
+    transform: translateZ(0);
+}
+
+/* ---------- 导航磁吸过渡 ---------- */
+.nav-links a,
+.darkroom-toggle,
+.audio-control {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* ---------- 联系方式复制按钮 ---------- */
+.contact-copy {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.copy-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 1.3rem;
+    background: transparent;
+    border: 1px solid var(--film-gray);
+    color: var(--film-light);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.35s ease;
+}
+
+.copy-chip .chip-key {
+    color: var(--film-gold-dim);
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+}
+
+.copy-chip:hover {
+    border-color: var(--film-gold);
+    color: var(--film-gold);
+    box-shadow: 0 0 24px var(--film-gold-glow);
+    transform: translateY(-2px);
+}
+
+.copy-chip.copied {
+    border-color: var(--film-gold);
+    color: var(--film-gold);
+}
+
+/* ---------- 复制提示 Toast ---------- */
+.copy-toast {
+    position: fixed;
+    bottom: 6.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--film-dark);
+    border: 1px solid var(--film-gold-dim);
+    color: var(--film-cream);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    padding: 0.7rem 1.4rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    z-index: 10002;
+}
+
+.copy-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 肖像框微倾斜 ---------- */
+.portrait-frame {
+    will-change: transform;
+}
+
+/* ---------- 章节标题分隔细线 ---------- */
+.section-header {
+    position: relative;
+}
+
+.section-header::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    margin-top: 1.4rem;
+    background: linear-gradient(to right, var(--film-gold), transparent);
+}
+
+/* ---------- 减弱动效偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .hero h1 em { animation: none; }
+    .copy-chip, .project-card { transition: none; }
+}
+
+@media (max-width: 768px) {
+    .copy-chip { font-size: 0.7rem; padding: 0.6rem 1rem; }
+}
+
+/* ---------- 陀螺仪开关（仅触屏设备显示）---------- */
+.gyro-toggle {
+    position: fixed;
+    bottom: 4.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 0.65rem 1.4rem;
+    background: rgba(12, 12, 12, 0.75);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--film-gold-dim);
+    border-radius: 999px;
+    color: var(--film-gold);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: opacity 0.8s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    animation: gyroPulse 2.4s ease-in-out infinite;
+}
+
+.gyro-toggle.active {
+    border-color: var(--film-gold);
+    box-shadow: 0 0 24px var(--film-gold-glow);
+    animation: none;
+}
+
+.gyro-toggle.fade {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes gyroPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201, 168, 108, 0.25); }
+    50% { box-shadow: 0 0 0 10px rgba(201, 168, 108, 0); }
+}
+
+/* ---------- 手机版整体优化 ---------- */
+@media (max-width: 768px) {
+    /* 更紧凑的章节节奏 */
+    section {
+        padding: 5rem 1.2rem;
+    }
+
+    /* 英雄区适配刘海屏与窄屏 */
+    .hero {
+        padding: 1.5rem 1rem calc(2rem + env(safe-area-inset-bottom));
+    }
+
+    .hero-frame {
+        padding: 2rem 1.4rem;
+        max-width: 94vw;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 11vw, 3rem);
+    }
+
+    .hero-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+    }
+
+    .film-strip {
+        gap: 6px;
+    }
+
+    .film-frame {
+        width: 38px;
+        height: 50px;
+    }
+
+    .scroll-hint {
+        bottom: calc(1.6rem + env(safe-area-inset-bottom));
+        font-size: 0.58rem;
+    }
+
+    /* 长邮箱防溢出 */
+    .contact-email {
+        font-size: clamp(0.95rem, 4.5vw, 1.2rem);
+        word-break: break-all;
+        padding: 0.7rem 0.8rem;
+    }
+
+    .contact-copy {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .copy-chip {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+    }
+
+    /* 作品卡片圆角与阴影在触屏上更柔和 */
+    .project-card {
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .project-info h3 {
+        font-size: 1.5rem;
+    }
+
+    /* 技能标签更紧凑 */
+    .skill-tag {
+        font-size: 0.68rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    /* 肖像高度进一步收紧 */
+    .portrait {
+        height: 320px;
+    }
+}
+
+/* 触屏设备关闭卡片倾斜残留过渡，避免误触抖动 */
+@media (hover: none) {
+    .project-card,
+    .portrait-frame {
+        transform: none !important;
+    }
+}
+
+/* ---------- 横向溢出彻底锁死 ---------- */
+html, body {
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+    max-width: 100%;
+}
+
+@supports not (overflow: clip) {
+    html, body { overflow-x: hidden; }
+}
+
+/* 双击缩放限制（配合 viewport user-scalable=no） */
+html { touch-action: manipulation; }
+.gallery-viewport { touch-action: pan-x pan-y; }
+
+/* 修复手机端时间轴圆点戳出屏幕 */
+@media (max-width: 768px) {
+    .project-item::before { left: -1.9rem; }
+    .project-timeline::before { left: 0.4rem; }
+}
+
+/* ---------- 英雄区胶片帧填入素材 ---------- */
+.film-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(35%) contrast(1.02) saturate(0.85) brightness(0.75);
+    opacity: 0.75;
+    transition: all 0.5s ease;
+}
+
+.film-frame.active img {
+    filter: sepia(10%) contrast(1.08) saturate(0.95) brightness(0.95);
+    opacity: 1;
+}
+
+.film-frame.active {
+    box-shadow: 0 0 18px var(--film-gold-glow);
+}
+
+[data-theme="darkroom"] .film-frame img {
+    filter: grayscale(100%) contrast(1.1) brightness(0.7);
+}
+
+/* ---------- 胶片长廊 ---------- */
+.film-gallery {
+    padding: 6rem 0;
+    background: var(--film-black);
+    overflow: hidden;
+}
+
+.film-gallery .section-header {
+    margin-bottom: 2.5rem;
+}
+
+.gallery-viewport {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+    border-top: 1px solid var(--film-gray);
+    border-bottom: 1px solid var(--film-gray);
+    position: relative;
+}
+
+.gallery-viewport::-webkit-scrollbar { display: none; }
+
+.gallery-viewport:active { cursor: grabbing; }
+
+/* 齿孔装饰条 */
+.gallery-viewport::before,
+.gallery-viewport::after {
+    content: '';
+    display: block;
+    height: 16px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0 12px,
+        var(--film-dark) 12px 30px,
+        transparent 30px 42px
+      ),
+      var(--film-black);
+    box-shadow: inset 0 0 0 1px rgba(42, 37, 32, 0.6);
+}
+
+.gallery-track {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    width: max-content;
+}
+
+.gallery-item {
+    width: 260px;
+    height: 175px;
+    margin: 0;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--film-gray);
+    cursor: zoom-in;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(25%) contrast(1.03) saturate(0.85) brightness(0.85);
+    transition: all 0.5s ease;
+    pointer-events: none;
+}
+
+.gallery-item:hover {
+    border-color: var(--film-gold-dim);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.gallery-item:hover img {
+    filter: sepia(8%) contrast(1.08) saturate(0.95) brightness(1);
+    transform: scale(1.05);
+}
+
+.gallery-item::after {
+    content: attr(data-caption);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem 0.8rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: var(--film-cream);
+    background: linear-gradient(to top, rgba(12, 12, 12, 0.85), transparent);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.35s ease;
+}
+
+.gallery-item:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+[data-theme="darkroom"] .gallery-item img {
+    filter: grayscale(100%) contrast(1.1) brightness(0.8);
+}
+
+.gallery-hint {
+    text-align: center;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    color: var(--film-gold-dim);
+    margin-top: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .film-gallery { padding: 4rem 0; }
+    .gallery-item { width: 190px; height: 128px; }
+    .gallery-item::after { opacity: 1; transform: none; font-size: 0.55rem; }
+}
+
+/* ---------- 灯箱 ---------- */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 10003;
+    background: rgba(8, 7, 6, 0.94);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    cursor: zoom-out;
+}
+
+.lightbox.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.lightbox-frame {
+    max-width: 90vw;
+    max-height: 78vh;
+    border: 6px solid var(--film-cream);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 60px var(--film-gold-glow);
+    transform: scale(0.92) rotate(-1deg);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    background: var(--film-dark);
+}
+
+.lightbox.open .lightbox-frame {
+    transform: scale(1) rotate(0deg);
+}
+
+.lightbox-frame img {
+    display: block;
+    max-width: 100%;
+    max-height: 78vh;
+    object-fit: contain;
+}
+
+.lightbox-caption {
+    margin-top: 1.1rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    color: var(--film-gold);
+    text-transform: uppercase;
+}
+
+.lightbox-close-hint {
+    position: absolute;
+    top: 1.4rem;
+    right: 1.6rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--film-gold-dim);
+}
+
+/* ---------- 联系区：暗房背景 + 金线相机装饰 ---------- */
+.contact {
+    overflow: hidden;
+}
+
+.contact-bg {
+    position: absolute;
+    inset: 0;
+    background: url('deco-darkroom.jpg') center / cover no-repeat;
+    opacity: 0.16;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+}
+
+[data-theme="darkroom"] .contact-bg {
+    filter: grayscale(100%);
+    opacity: 0.12;
+}
+
+.contact .container {
+    position: relative;
+    z-index: 1;
+}
+
+.deco-camera {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    margin: 0 auto 1.2rem;
+    display: block;
+    filter: drop-shadow(0 0 22px rgba(201, 168, 108, 0.35));
+    animation: cameraFloat 5s ease-in-out infinite;
+    transition: transform 0.4s ease, filter 0.4s ease;
+    cursor: pointer;
+}
+
+.deco-camera:hover {
+    transform: scale(1.08) rotate(-3deg);
+    filter: drop-shadow(0 0 34px rgba(201, 168, 108, 0.6));
+}
+
+@keyframes cameraFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+[data-theme="darkroom"] .deco-camera {
+    filter: grayscale(80%) drop-shadow(0 0 18px rgba(176, 176, 176, 0.25));
+}
+
+@media (max-width: 768px) {
+    .deco-camera { width: 96px; height: 96px; }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "yibo-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "赵艺博 · 胶片档案作品集",
+  "scripts": {
+    "dev": "node dev-server.js"
+  }
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>荣誉墙 — 赵艺博 · 胶片档案</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <meta name="description" content="赵艺博的竞赛荣誉全记录：全国一等奖、全国二等奖、国际设计大赛银奖等 18 项奖项证书。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Noto+Serif+SC:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+    <a class="btn back-link" href="index.html">← 返回首页</a>
+
+    <header class="awards-page-head">
+        <div class="section-head" style="margin-bottom:28px">
+            <span class="no mono">ARCHIVE</span>
+            <span class="label">荣誉全记录 / Full Honors</span>
+            <span class="rule"></span>
+            <span class="tag mono">18 Certificates</span>
+        </div>
+        <h1 class="awards-page-title reveal-clip">荣誉墙<span class="en">Wall of Honors</span></h1>
+        <p style="color:var(--ink-soft);margin:18px 0 0;max-width:36em">从全国一等奖到国际设计大赛银奖——每一张证书背后，都是一次跳出舒适区的备赛。点击任意证书可放大查看。</p>
+    </header>
+
+    <main class="section" style="padding-top:clamp(36px,5vw,64px)">
+        <div class="award-grid" id="awardGrid"></div>
+        <p class="mono" style="margin-top:40px;color:var(--ink-soft)">另：学院公众号《南传新发现》专题报道 — <a href="https://mp.weixin.qq.com/s/EKhKLv-CSVaajQyErDbIbQ" target="_blank" rel="noopener" style="text-decoration:underline;text-decoration-color:var(--kodak-red);text-underline-offset:4px">「以热爱为笔，让创意落地」↗</a></p>
+    </main>
+
+    <footer class="site-footer">
+        <span class="mono">© 2026 Yibo Zhao · Developed in the darkroom</span>
+        <a class="mono" href="index.html#contact">联络我 ↗</a>
+    </footer>
+
+    <!-- 证书放大 -->
+    <div id="lightbox" role="dialog" aria-label="证书大图">
+        <button id="lightboxClose" aria-label="关闭">✕ ESC</button>
+        <figure>
+            <img id="lightboxImg" src="" alt="证书大图">
+            <figcaption id="lightboxCaption" class="mono"></figcaption>
+        </figure>
+    </div>
+
+    <script>
+        // 奖项数据（与证书文件一一对应）
+        var AWARDS = [
+            { img: 'dongfang-g1', title: '东方设计奖', level: '全国一等奖', cls: 'national' },
+            { img: 'xiangcun-g2', title: '全国青少年乡村振兴知识科普暨短视频大赛', level: '全国二等奖', cls: 'national' },
+            { img: 'haochuangyi-g3', title: '中国好创意暨全国数字艺术设计大赛 · 数字摄影类', level: '全国三等奖', cls: 'national' },
+            { img: 'haochuangyi-s1', title: '中国好创意暨全国数字艺术设计大赛 · 数字摄影类', level: '江苏赛区一等奖', cls: 'provincial' },
+            { img: 'daguangshi-g', title: '第 18 届全国大学生广告艺术大赛', level: '全国总评审优秀奖', cls: 'national' },
+            { img: 'daguangshi-s2', title: '全国大学生广告艺术大赛', level: '江苏赛区二等奖', cls: 'provincial' },
+            { img: 'icad-silver', title: 'ICAD 国际当代青年美术设计大赛', level: '银奖', cls: 'silver' },
+            { img: 'hk-silver', title: '香港当代设计奖', level: '银奖', cls: 'silver' },
+            { img: 'huaxia-bronze', title: '华夏奖', level: '铜奖', cls: 'silver' },
+            { img: 'nianjian-bronze', title: '中国当代大学生艺术作品年鉴', level: '铜奖', cls: 'silver' },
+            { img: 'jilin-s2', title: '吉林省大学生广告创意大赛', level: '省二等奖', cls: 'provincial' },
+            { img: 'milan-s3', title: '米兰设计周 · 中国结主题两岸同源视频', level: '江苏赛区三等奖', cls: 'provincial' },
+            { img: 'weilai-s3', title: '未来设计师 · 全国高校数字艺术设计大赛', level: '省三等奖', cls: 'provincial' },
+            { img: 'jindu', title: '金犊奖 · 中国结主题两岸同源视频', level: '优秀奖', cls: 'provincial' },
+            { img: 'zhongyou', title: '中邮保险杯江苏高校金融教育短视频大赛', level: '三等奖', cls: 'provincial' },
+            { img: 'xinmeiti', title: '全国大学生新媒体创新创意大赛', level: '三等奖', cls: 'national' },
+            { img: 'yazhou', title: '亚洲大学生创意设计展', level: '三等奖', cls: 'silver' },
+            { img: 'guoan', title: '国安短视频大赛', level: '校一等奖', cls: 'provincial' }
+        ];
+
+        var grid = document.getElementById('awardGrid');
+        grid.innerHTML = AWARDS.map(function (a, i) {
+            return '<figure class="award-card reveal" style="--d:' + (i % 3) * 0.06 + 's" data-full="awards/' + a.img + '.jpg" tabindex="0">'
+                + '<div class="award-img"><img src="awards/' + a.img + '.jpg" alt="' + a.title + a.level + '证书" loading="lazy"></div>'
+                + '<figcaption><b>' + a.title + '</b><span class="award-level ' + a.cls + '">' + a.level + '</span></figcaption>'
+                + '</figure>';
+        }).join('');
+    </script>
+    <script src="site.js" defer></script>
+</body>
+</html>

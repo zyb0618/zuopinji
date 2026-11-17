@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赵艺博 — 胶片档案</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --film-black: #0c0c0c;
+            --film-dark: #1a1714;
+            --film-gray: #2a2520;
+            --film-light: #b8a890;
+            --film-gold: #c9a86c;
+            --film-gold-dim: #7a6b52;
+            --film-gold-glow: rgba(201,168,108,0.15);
+            --film-cream: #e8dfd1;
+            --film-amber: #d4a574;
+            --film-rose: #a67b7b;
+        }
+
+        /* 暗房模式变量 */
+        [data-theme="darkroom"] {
+            --film-gold: #b0b0b0;
+            --film-gold-dim: #555555;
+            --film-gold-glow: rgba(176,176,176,0.12);
+            --film-cream: #c8c8c8;
+            --film-light: #777777;
+            --film-amber: #888888;
+            --film-rose: #666666;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', 'Playfair Display', serif;
+            background: var(--film-black);
+            color: var(--film-cream);
+            overflow-x: hidden;
+            line-height: 1.8;
+            transition: background 0.5s ease;
+        }
+
+        /* ========== 柔和胶片颗粒 ========== */
+        .film-grain {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            animation: grainDrift 8s steps(10) infinite;
+        }
+
+        @keyframes grainDrift {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-2%, -2%); }
+            20% { transform: translate(2%, 1%); }
+            30% { transform: translate(-1%, 2%); }
+            40% { transform: translate(1%, -1%); }
+            50% { transform: translate(-2%, 1%); }
+            60% { transform: translate(2%, -2%); }
+            70% { transform: translate(-1%, -1%); }
+            80% { transform: translate(1%, 2%); }
+            90% { transform: translate(-2%, -1%); }
+        }
+
+        /* ========== 柔和暗角 ========== */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            background: radial-gradient(
+                ellipse at 50% 40%,
+                transparent 0%,
+                transparent 50%,
+                rgba(12,12,12,0.4) 100%
+            );
+            transition: all 0.5s ease;
+        }
+
+        [data-theme="darkroom"] .vignette {
+            background: radial-gradient(
+                ellipse at 50% 40%,
+                transparent 0%,
+                transparent 45%,
+                rgba(0,0,0,0.6) 100%
+            );
+        }
+
+        /* ========== 自然漏光系统 ========== */
+        .light-leak-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9997;
+            overflow: hidden;
+        }
+
+        .light-leak {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .light-leak.active {
+            opacity: 1;
+        }
+
+        .leak-1 {
+            width: 600px;
+            height: 500px;
+            background: radial-gradient(ellipse at 30% 70%, rgba(201,168,108,0.25) 0%, rgba(212,165,100,0.08) 40%, transparent 70%);
+            top: -15%;
+            right: -10%;
+            animation: gentleDrift1 20s ease-in-out infinite;
+        }
+
+        .leak-2 {
+            width: 500px;
+            height: 400px;
+            background: radial-gradient(ellipse at 70% 30%, rgba(180,140,100,0.2) 0%, rgba(160,120,80,0.06) 50%, transparent 70%);
+            bottom: -10%;
+            left: -15%;
+            animation: gentleDrift2 25s ease-in-out infinite;
+        }
+
+        .leak-3 {
+            width: 400px;
+            height: 600px;
+            background: radial-gradient(ellipse at 50% 50%, rgba(166,123,123,0.15) 0%, transparent 60%);
+            top: 25%;
+            right: 15%;
+            animation: gentleDrift3 18s ease-in-out infinite;
+        }
+
+        .leak-4 {
+            width: 800px;
+            height: 300px;
+            background: radial-gradient(ellipse at 50% 100%, rgba(201,168,108,0.12) 0%, transparent 60%);
+            top: -5%;
+            left: 20%;
+            animation: gentleDrift4 22s ease-in-out infinite;
+        }
+
+        [data-theme="darkroom"] .leak-1 {
+            background: radial-gradient(ellipse at 30% 70%, rgba(160,160,160,0.15) 0%, transparent 70%);
+        }
+
+        [data-theme="darkroom"] .leak-2 {
+            background: radial-gradient(ellipse at 70% 30%, rgba(140,140,140,0.1) 0%, transparent 70%);
+        }
+
+        @keyframes gentleDrift1 {
+            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.6; }
+            33% { transform: translate(30px, 40px) scale(1.1) rotate(3deg); opacity: 0.8; }
+            66% { transform: translate(-20px, -30px) scale(0.95) rotate(-2deg); opacity: 0.5; }
+        }
+
+        @keyframes gentleDrift2 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            50% { transform: translate(-40px, 30px) scale(1.15); opacity: 0.7; }
+        }
+
+        @keyframes gentleDrift3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.4; }
+            50% { transform: translate(50px, -60px) rotate(8deg); opacity: 0.6; }
+        }
+
+        @keyframes gentleDrift4 {
+            0%, 100% { transform: translate(0, 0) scaleX(1); opacity: 0.5; }
+            50% { transform: translate(-30px, 20px) scaleX(1.2); opacity: 0.7; }
+        }
+
+        /* ========== 细微扫描线 ========== */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9996;
+            opacity: 0.15;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 4px,
+                rgba(0,0,0,0.02) 4px,
+                rgba(0,0,0,0.02) 8px
+            );
+        }
+
+        /* ========== 暗房闪光效果 ========== */
+        .darkroom-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10001;
+            transition: none;
+        }
+
+        .darkroom-flash.flash-active {
+            animation: flashAnim 0.6s ease-out forwards;
+        }
+
+        @keyframes flashAnim {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--film-black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--film-gold-dim);
+            border-radius: 3px;
+        }
+
+        /* ========== 胶片卷轴进度条 ========== */
+        .film-progress {
+            position: fixed;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .film-reel {
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--film-gold-dim);
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .film-reel::before {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            border: 1px solid var(--film-gold-dim);
+            border-radius: 50%;
+            top: 25%;
+            left: 25%;
+        }
+
+        .film-reel::after {
+            content: '';
+            position: absolute;
+            width: 20%;
+            height: 20%;
+            background: var(--film-gold-dim);
+            border-radius: 50%;
+            top: 40%;
+            left: 40%;
+        }
+
+        .film-reel.spinning {
+            animation: reelSpin 0.5s linear infinite;
+        }
+
+        @keyframes reelSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-track {
+            width: 2px;
+            height: 180px;
+            background: var(--film-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, var(--film-gold), transparent);
+            transition: height 0.1s linear;
+        }
+
+        .progress-label {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.6rem;
+            color: var(--film-gold-dim);
+            letter-spacing: 0.15em;
+            writing-mode: vertical-rl;
+        }
+
+        /* ========== 胶片齿孔 ========== */
+        .film-sprockets {
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 40px 0;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .film-sprockets.left { left: 0; }
+        .film-sprockets.right { right: 0; }
+
+        .sprocket-hole {
+            width: 12px;
+            height: 18px;
+            background: var(--film-dark);
+            border-radius: 2px;
+            margin: 0 auto;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.8);
+            border: 1px solid var(--film-gray);
+        }
+
+        /* ========== 音频控制 ========== */
+        .audio-control {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            z-index: 1000;
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--film-gray);
+            background: var(--film-black);
+            color: var(--film-gold-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 1.2rem;
+            border-radius: 50%;
+        }
+
+        .audio-control:hover {
+            border-color: var(--film-gold);
+            color: var(--film-gold);
+            box-shadow: 0 0 20px var(--film-gold-glow);
+        }
+
+        .audio-control.active {
+            border-color: var(--film-gold);
+            color: var(--film-gold);
+        }
+
+        .audio-waves {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .audio-control.active .audio-waves {
+            opacity: 1;
+        }
+
+        .audio-control.active .audio-icon {
+            opacity: 0;
+        }
+
+        .wave {
+            width: 3px;
+            background: var(--film-gold);
+            border-radius: 2px;
+            animation: waveAnim 0.6s ease infinite alternate;
+        }
+
+        .wave:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .wave:nth-child(2) { height: 16px; animation-delay: 0.15s; }
+        .wave:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+
+        @keyframes waveAnim {
+            from { transform: scaleY(0.3); }
+            to { transform: scaleY(1); }
+        }
+
+        /* ========== 导航 ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 1.5rem 3rem;
+            background: linear-gradient(to bottom, rgba(12,12,12,0.9), transparent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--film-gold-dim);
+            text-decoration: none;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--film-gold);
+            transition: width 0.4s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--film-gold);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .darkroom-toggle {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--film-gold-dim);
+            background: transparent;
+            color: var(--film-gold-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.4s ease;
+            border-radius: 50%;
+        }
+
+        .darkroom-toggle:hover {
+            border-color: var(--film-gold);
+            color: var(--film-gold);
+        }
+
+        .darkroom-toggle.active {
+            background: var(--film-gold);
+            color: var(--film-black);
+        }
+
+        /* ========== 动画类 ========== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-80px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ========== 英雄区域 ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 70% 20%, rgba(201,168,108,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 30% 80%, rgba(166,123,123,0.06) 0%, transparent 40%),
+                var(--film-black);
+            z-index: -2;
+        }
+
+        .hero-frame {
+            border: 1px solid rgba(184,168,144,0.12);
+            padding: 4rem 5rem;
+            position: relative;
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--film-gold-dim);
+        }
+
+        .corner-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .corner-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+        .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+        .hero-label {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--film-gold-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--film-gold);
+        }
+
+        .hero-subtitle {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.9rem;
+            color: var(--film-light);
+            letter-spacing: 0.15em;
+            margin-bottom: 2.5rem;
+        }
+
+        .film-strip {
+            display: flex;
+            gap: 8px;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .film-frame {
+            width: 50px;
+            height: 65px;
+            border: 1px solid var(--film-gray);
+            background: var(--film-dark);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .film-frame.active {
+            border-color: var(--film-gold);
+            background: rgba(201,168,108,0.1);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--film-gold-dim);
+            animation: gentleBounce 3s ease-in-out infinite;
+        }
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+            50% { transform: translateX(-50%) translateY(8px); opacity: 1; }
+        }
+
+        /* ========== 内容区域 ========== */
+        section {
+            position: relative;
+            padding: 8rem 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 3rem;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-number {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            color: var(--film-gold-dim);
+            letter-spacing: 0.3em;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', 'Noto Serif SC', serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--film-gold);
+        }
+
+        /* ========== 关于区域 ========== */
+        .about {
+            background: var(--film-dark);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 5rem;
+            align-items: start;
+        }
+
+        .portrait-frame {
+            position: relative;
+            transform: rotate(-2deg);
+            transition: transform 0.5s ease;
+        }
+
+        .portrait-frame:hover {
+            transform: rotate(0deg);
+        }
+
+        .portrait {
+            width: 100%;
+            height: 450px;
+            background: var(--film-gray);
+            border: 8px solid var(--film-cream);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: sepia(20%) contrast(1.05) saturate(0.9);
+            transition: all 0.5s ease;
+        }
+
+        [data-theme="darkroom"] .portrait img {
+            filter: grayscale(100%) contrast(1.15);
+        }
+
+        .portrait:hover img {
+            filter: sepia(10%) contrast(1.1) saturate(0.95);
+            transform: scale(1.03);
+        }
+
+        [data-theme="darkroom"] .portrait:hover img {
+            filter: grayscale(100%) contrast(1.25);
+        }
+
+        .portrait-date {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.65rem;
+            color: var(--film-cream);
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            letter-spacing: 0.1em;
+        }
+
+        .about-text p {
+            font-size: 1.05rem;
+            line-height: 2;
+            color: var(--film-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p:first-child::first-letter {
+            font-size: 3.5rem;
+            float: left;
+            line-height: 1;
+            padding-right: 0.5rem;
+            color: var(--film-gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 2rem;
+        }
+
+        .skill-tag {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--film-gray);
+            color: var(--film-light);
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--film-gold);
+            color: var(--film-gold);
+            transform: translateX(5px);
+        }
+
+        /* ========== 作品区域 ========== */
+        .projects {
+            position: relative;
+        }
+
+        .project-timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .project-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--film-gold-dim), transparent);
+        }
+
+        .project-item {
+            position: relative;
+            margin-bottom: 6rem;
+            padding-left: 3rem;
+        }
+
+        .project-item::before {
+            content: '';
+            position: absolute;
+            left: -3.5rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--film-gold-dim);
+            background: var(--film-black);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+        }
+
+        .project-item:hover::before {
+            background: var(--film-gold);
+            border-color: var(--film-gold);
+        }
+
+        .project-year {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            color: var(--film-gold-dim);
+            letter-spacing: 0.2em;
+            margin-bottom: 0.8rem;
+        }
+
+        .project-card {
+            background: var(--film-dark);
+            border: 1px solid var(--film-gray);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .project-card:hover {
+            border-color: rgba(201,168,108,0.3);
+        }
+
+        .project-visual {
+            position: relative;
+            min-height: 300px;
+            background: var(--film-gray);
+            overflow: hidden;
+        }
+
+        .project-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: sepia(15%) contrast(1.02) saturate(0.9);
+            transition: all 0.6s ease;
+        }
+
+        [data-theme="darkroom"] .project-visual img {
+            filter: grayscale(100%) contrast(1.1);
+        }
+
+        .project-card:hover .project-visual img {
+            filter: sepia(5%) contrast(1.08) saturate(0.95);
+            transform: scale(1.05);
+        }
+
+        .project-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .project-visual img[src] + .project-icon {
+            display: none;
+        }
+
+        .project-info {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .project-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .project-info p {
+            color: var(--film-light);
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .project-meta {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.7rem;
+            color: var(--film-gold-dim);
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--film-gold);
+            text-decoration: none;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            transition: gap 0.3s ease;
+        }
+
+        .project-link:hover {
+            gap: 1rem;
+        }
+
+        .project-item:nth-child(even) .project-card {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .project-item:nth-child(even) .project-visual {
+            order: 2;
+        }
+
+        /* ========== 联系区域 ========== */
+        .contact {
+            background: var(--film-dark);
+            text-align: center;
+        }
+
+        .contact-email {
+            font-family: 'Courier Prime', monospace;
+            font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+            color: var(--film-gold);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            display: inline-block;
+            margin: 2rem 0;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid transparent;
+            transition: all 0.4s ease;
+        }
+
+        .contact-email:hover {
+            border-color: var(--film-gold);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--film-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--film-light);
+            text-decoration: none;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            transition: all 0.4s ease;
+        }
+
+        .social-links a:hover {
+            border-color: var(--film-gold);
+            color: var(--film-gold);
+            transform: translateY(-5px);
+        }
+
+        /* ========== 页脚 ========== */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--film-gray);
+        }
+
+        .footer-text {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.7rem;
+            color: var(--film-gold-dim);
+            letter-spacing: 0.2em;
+            line-height: 2;
+        }
+
+        /* ========== 加载画面 ========== */
+        .page-load {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--film-black);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s ease, visibility 1.2s ease;
+        }
+
+        .page-load.done {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .load-film {
+            width: 200px;
+            height: 30px;
+            border: 1px solid var(--film-gray);
+            padding: 3px;
+        }
+
+        .load-film-inner {
+            height: 100%;
+            background: var(--film-gold-dim);
+            animation: loadProgress 2s ease forwards;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        .load-text {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.75rem;
+            color: var(--film-gold-dim);
+            letter-spacing: 0.3em;
+            margin-top: 1rem;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .film-sprockets,
+            .film-progress,
+            .audio-control {
+                display: none;
+            }
+
+            .hero-frame {
+                padding: 2.5rem;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .portrait {
+                height: 350px;
+            }
+
+            .project-card,
+            .project-item:nth-child(even) .project-card {
+                grid-template-columns: 1fr;
+            }
+
+            .project-visual {
+                min-height: 220px;
+                order: -1 !important;
+            }
+
+            .project-item:nth-child(even) .project-visual {
+                order: -1;
+            }
+
+            nav {
+                padding: 1rem;
+                width: 100%;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                font-size: 0.65rem;
+            }
+
+            .container {
+                padding: 0 1.2rem;
+            }
+
+            .project-timeline {
+                padding-left: 1.5rem;
+            }
+
+            .project-item {
+                padding-left: 1.5rem;
+            }
+
+            .project-info {
+                padding: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 加载画面 -->
+    <div class="page-load" id="pageLoad">
+        <div class="load-film">
+            <div class="load-film-inner"></div>
+        </div>
+        <div class="load-text">DEVELOPING...</div>
+    </div>
+
+    <!-- 暗房闪光层 -->
+    <div class="darkroom-flash" id="darkroomFlash"></div>
+
+    <!-- 效果层 -->
+    <div class="film-grain"></div>
+    <div class="vignette"></div>
+    <div class="light-leak-container">
+        <div class="light-leak leak-1 active"></div>
+        <div class="light-leak leak-2 active"></div>
+        <div class="light-leak leak-3 active"></div>
+        <div class="light-leak leak-4 active"></div>
+    </div>
+    <div class="scanlines"></div>
+
+    <!-- 胶片卷轴进度条 -->
+    <div class="film-progress">
+        <div class="film-reel" id="filmReel"></div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label">FILM</div>
+    </div>
+
+    <!-- 胶片齿孔 -->
+    <div class="film-sprockets left" id="sprocketsLeft"></div>
+    <div class="film-sprockets right" id="sprocketsRight"></div>
+
+    <!-- 音频控制 -->
+    <button class="audio-control" id="audioControl" title="开启胶片转动音效">
+        <span class="audio-icon">🔇</span>
+        <div class="audio-waves">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </button>
+
+    <!-- 导航 -->
+    <nav>
+        <ul class="nav-links">
+            <li><a href="#home">首页</a></li>
+            <li><a href="#about">档案</a></li>
+            <li><a href="#projects">作品</a></li>
+            <li><a href="#contact">联络</a></li>
+            <li><button class="darkroom-toggle" id="darkroomToggle" title="切换暗房模式">⚪</button></li>
+        </ul>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        
+        <div class="hero-frame reveal-scale">
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+            
+            <div class="hero-label">PERSONAL ARCHIVE / 2026</div>
+            <h1>赵艺博<br><em>胶片档案</em></h1>
+            <div class="hero-subtitle">DESIGNER & DEVELOPER</div>
+            
+            <div class="film-strip">
+                <div class="film-frame active"></div>
+                <div class="film-frame"></div>
+                <div class="film-frame"></div>
+                <div class="film-frame"></div>
+                <div class="film-frame"></div>
+            </div>
+        </div>
+        
+        <div class="scroll-hint">▼ SCROLL TO EXPLORE</div>
+    </section>
+
+    <!-- 关于区域 -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-number">NO. 01</div>
+                <h2 class="section-title">关于我<br><em>About Me</em></h2>
+            </div>
+            
+            <div class="about-grid">
+                <div class="portrait-frame reveal-left">
+                    <div class="portrait">
+                        <img src="1.jpg" alt="你的名字">
+                        <span class="portrait-date">2025.03.15</span>
+                    </div>
+                </div>
+                
+                <div class="about-text reveal-right">
+                    <p>在这个数字化的时代，我依然钟情于那些带有温度的事物。每一段文案、每一帧画面，都像是暗房里慢慢显影的胶片，需要耐心等待，才能看到最终的影像。</p>
+                    
+                    <p>我是一名南京传媒学院广告学专业学生，在校期间做过微电影社团社长，也带过志愿协会的媒体部门，从策划到拍摄到剪辑都能独立完成。我习惯用项目验证想法，用作品说话。</p>
+                    
+                    <p>工作之余，我喜欢用胶片相机记录生活，在暗房里冲洗照片，感受那种不可复制的、带有偶然性的美。</p>
+                    
+                    <div class="skills">
+                        <span class="skill-tag">Copywriting</span>
+                        <span class="skill-tag">Content Planning</span>
+                        <span class="skill-tag">Creative Conception</span>
+                        <span class="skill-tag">Photography</span>
+                        <span class="skill-tag">Video Editing</span>
+                        <span class="skill-tag">Platform Operation</span>
+                        <span class="skill-tag">Trend Insight</span>
+                        <span class="skill-tag">AIGC Creation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品区域 -->
+    <section class="projects" id="projects">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-number">NO. 02</div>
+                <h2 class="section-title">精选作品<br><em>Selected Works</em></h2>
+            </div>
+            
+            <div class="project-timeline">
+                
+                <div class="project-item reveal-left">
+                    <div class="project-year">2025</div>
+                    <div class="project-card">
+                        <div class="project-visual">
+                            <img src="project1.jpg" alt="光影叙事">
+                            <span class="project-icon">🎬</span>
+                        </div>
+                        <div class="project-info">
+                            <h3>光影叙事</h3>
+                            <div class="project-meta">编剧、灯光设计</div>
+                            <p>作品取景甘肃兰州，依托西北独有的城市肌理与人文氛围，打造文艺电影短片。本人承担剧本创作，同时主导现场灯光布设。作品上线全网播放量突破 50 万，斩获新片场金雀奖校园精英大赛最佳编剧、摄影二等奖，及 松下GOV 最佳编剧、最佳影片等多项专业赛事荣誉。</p>
+                            <a href="https://www.xinpianchang.com/a13389649?from=webShare&channel=copyLink" class="project-link">VIEW PROJECT →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-item reveal-right">
+                    <div class="project-year">2026</div>
+                    <div class="project-card">
+                        <div class="project-visual">
+                            <img src="project2.jpg" alt="显影时间">
+                            <span class="project-icon">📷</span>
+                        </div>
+                        <div class="project-info">
+                            <h3>显影时间</h3>
+                            <div class="project-meta">选题、文案、剪辑</div>
+                            <p>国际在线实习期间参与乡村振兴云南特色产业纪实项目，聚焦地域产业风貌。本人负责选题策划、文案撰写与后期剪辑工作。文案兼顾情感温度与网络传播属性，剪辑节奏舒缓流畅，叙事逻辑清晰完整。作品全平台播放量破百万，被二十余家主流媒体转载，实现乡村文化内容大范围破圈传播。</p>
+                            <a href="https://city.cri.cn/2026-03-18/d1fddc13-b792-4d52-6606-48f137d5430f.html" class="project-link">VIEW PROJECT →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-item reveal-left">
+                    <div class="project-year">2026</div>
+                    <div class="project-card">
+                        <div class="project-visual">
+                            <img src="project3.jpg" alt="帧间记忆">
+                            <span class="project-icon">🎞️</span>
+                        </div>
+                        <div class="project-info">
+                            <h3>帧间记忆</h3>
+                            <div class="project-meta">导演、AIGCer</div>
+                            <p>聚焦皮影戏非遗文化，创意打造数字化科普宣传短片。本人担任项目导演、AIGCer。影片系统梳理皮影戏起源沿革与文化底蕴，融合国风虚拟场景与传统皮影元素，以年轻化影像语言赋能古老非遗技艺，实现传统文化与 AI 创意创作的创新融合。</p>
+                            <a href="https://www.xinpianchang.com/a13672812" class="project-link">VIEW PROJECT →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-item reveal-right">
+                    <div class="project-year">2022</div>
+                    <div class="project-card">
+                        <div class="project-visual">
+                            <img src="project4.jpg" alt="城市显影">
+                            <span class="project-icon">🌆</span>
+                        </div>
+                        <div class="project-info">
+                            <h3>城市显影</h3>
+                            <div class="project-meta">PHOTOGRAPHY / DOCUMENTARY</div>
+                            <p>收录城市人文、街巷纪实、自然风光等多元原创实拍作品。以镜头为载体，专注捕捉日常自然光影、市井生活百态与地域独特气质。在行摄中定格时光碎片，留存人间烟火诗意，逐步沉淀形成专属个人的影像审美与创作风格。</p>
+                            <a href="https://500px.com.cn/yibozhao" class="project-link">VIEW PROJECT →</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系区域 -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-content reveal-scale">
+                <div class="section-number">NO. 03</div>
+                <h2 class="section-title">联络我<br><em>Get in Touch</em></h2>
+                <p style="color: var(--film-light); margin: 1.2rem 0 2rem; line-height: 2;">
+                    有项目合作的想法，或者只是想聊聊胶片与影像？<br>
+                    随时给我写信。
+                </p>
+                <a href="2027218096@qq.com" class="contact-email">
+                    2027218096@qq.com
+                </a>
+               <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>复制联系方式</title>
+<style>
+  .copy-btn {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background: #222;
+    color: #fff;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- 改成你自己的微信号、QQ号 -->
+<button class="copy-btn" onclick="copyWechat()">Click to get my WeChat</button>
+<button class="copy-btn" onclick="copyQQ()">Click to get my QQ</button>
+
+<script>
+// 改成你自己的账号
+const wechatNum = "zyb16651610618";
+const qqNum = "2027218096";
+
+function copyWechat() {
+  navigator.clipboard.writeText(wechatNum).then(()=>{
+    alert("微信号已复制，可直接粘贴添加！");
+  })
+}
+
+function copyQQ() {
+  navigator.clipboard.writeText(qqNum).then(()=>{
+    alert("QQ号已复制！");
+  })
+}
+</script>
+
+</body>
+</html>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-text">
+            © 2026 Yibo Zhao · DEVELOPED IN THE DARKROOM<br>
+            ALL RIGHTS RESERVED · EST. 35MM
+        </div>
+    </footer>
+
+    <script>
+        // ========== 页面加载 ==========
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('pageLoad').classList.add('done');
+            }, 2500);
+        });
+
+        // ========== 动态生成齿孔 ==========
+        function generateSprockets() {
+            const left = document.getElementById('sprocketsLeft');
+            const right = document.getElementById('sprocketsRight');
+            const count = Math.ceil(window.innerHeight / 100);
+            
+            left.innerHTML = '';
+            right.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                left.innerHTML += '<div class="sprocket-hole"></div>';
+                right.innerHTML += '<div class="sprocket-hole"></div>';
+            }
+        }
+        
+        generateSprockets();
+        window.addEventListener('resize', generateSprockets);
+
+        // ========== 音频系统（修复版）==========
+        let audioContext = null;
+        let audioEnabled = false;
+        let isPlaying = false;
+        let masterGain = null;
+        let noiseNodes = [];
+
+        function initAudio() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    masterGain = audioContext.createGain();
+                    masterGain.gain.value = 0;
+                    masterGain.connect(audioContext.destination);
+                } catch (e) {
+                    console.warn('Web Audio API 不支持');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function createBrownNoise() {
+            if (!audioContext || !masterGain) return null;
+            
+            const bufferSize = 2 * audioContext.sampleRate;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const output = buffer.getChannelData(0);
+            let lastOut = 0;
+            
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                output[i] = (lastOut + (0.02 * white)) / 1.02;
+                lastOut = output[i];
+                output[i] *= 3.5;
+            }
+            
+            const noise = audioContext.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+            
+            const noiseFilter = audioContext.createBiquadFilter();
+            noiseFilter.type = 'lowpass';
+            noiseFilter.frequency.value = 800;
+            
+            const noiseGain = audioContext.createGain();
+            noiseGain.gain.value = 0.3;
+            
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(masterGain);
+            
+            noise.start();
+            return { source: noise, gain: noiseGain };
+        }
+
+        function createClickSound() {
+            if (!audioContext || !masterGain) return null;
+            
+            const clickGain = audioContext.createGain();
+            clickGain.gain.value = 0;
+            clickGain.connect(masterGain);
+            
+            const osc = audioContext.createOscillator();
+            osc.type = 'square';
+            osc.frequency.value = 2000;
+            osc.connect(clickGain);
+            osc.start();
+            
+            const interval = setInterval(() => {
+                if (!isPlaying) {
+                    clearInterval(interval);
+                    return;
+                }
+                const now = audioContext.currentTime;
+                clickGain.gain.setValueAtTime(0, now);
+                clickGain.gain.linearRampToValueAtTime(0.12, now + 0.001);
+                clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+            }, 1000 / 24);
+            
+            return { osc, gain: clickGain, interval };
+        }
+
+        function createRumble() {
+            if (!audioContext || !masterGain) return null;
+            
+            const osc = audioContext.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.value = 50;
+            
+            const rumbleGain = audioContext.createGain();
+            rumbleGain.gain.value = 0.05;
+            
+            osc.connect(rumbleGain);
+            rumbleGain.connect(masterGain);
+            osc.start();
+            
+            return { osc, gain: rumbleGain };
+        }
+
+        function startFilmSound() {
+            if (isPlaying || !audioContext) return;
+            
+            const now = audioContext.currentTime;
+            masterGain.gain.cancelScheduledValues(now);
+            masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+            masterGain.gain.linearRampToValueAtTime(0.05, now + 0.15);
+            
+            noiseNodes = [
+                createBrownNoise(),
+                createClickSound(),
+                createRumble()
+            ].filter(Boolean);
+            
+            isPlaying = true;
+        }
+
+        function stopFilmSound() {
+            if (!isPlaying || !audioContext) return;
+            
+            const now = audioContext.currentTime;
+            masterGain.gain.cancelScheduledValues(now);
+            masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+            masterGain.gain.linearRampToValueAtTime(0, now + 0.2);
+            
+            setTimeout(() => {
+                noiseNodes.forEach(node => {
+                    if (node.source) node.source.stop();
+                    if (node.osc) node.osc.stop();
+                    if (node.interval) clearInterval(node.interval);
+                });
+                noiseNodes = [];
+                isPlaying = false;
+            }, 200);
+        }
+
+        // 音频按钮控制
+        const audioControl = document.getElementById('audioControl');
+        const audioIcon = audioControl.querySelector('.audio-icon');
+
+        audioControl.addEventListener('click', async function() {
+            const success = initAudio();
+            if (!success) {
+                audioIcon.textContent = '❌';
+                setTimeout(() => audioIcon.textContent = '🔇', 1000);
+                return;
+            }
+            
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+            
+            audioEnabled = !audioEnabled;
+            this.classList.toggle('active', audioEnabled);
+            audioIcon.textContent = audioEnabled ? '🔊' : '🔇';
+            
+            if (audioEnabled) {
+                startFilmSound();
+                setTimeout(() => {
+                    if (!isFastScrolling) stopFilmSound();
+                }, 500);
+            } else {
+                stopFilmSound();
+            }
+        });
+
+        // ========== 滚动视差系统 ==========
+        const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        const progressFill = document.getElementById('progressFill');
+        const filmReel = document.getElementById('filmReel');
+        
+        let ticking = false;
+        let prevScrollY = 0;
+        let isFastScrolling = false;
+        let scrollTimeout;
+
+        function updateParallax() {
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            const scrollProgress = scrollY / (docHeight - viewportHeight);
+            const velocity = Math.abs(scrollY - prevScrollY);
+            isFastScrolling = velocity > 20;
+
+            // 进度条
+            progressFill.style.height = `${Math.min(scrollProgress * 100, 100)}%`;
+            
+            // 卷轴旋转
+            filmReel.style.transform = `translateY(-50%) rotate(${scrollProgress * 720}deg)`;
+            
+            // 快速滚动效果
+            if (isFastScrolling) {
+                filmReel.classList.add('spinning');
+                
+                // 触发音频
+                if (audioEnabled && !isPlaying) {
+                    startFilmSound();
+                }
+            } else {
+                filmReel.classList.remove('spinning');
+            }
+
+            // 元素显现
+            reveals.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const triggerPoint = viewportHeight * 0.85;
+                
+                if (rect.top < triggerPoint) {
+                    el.classList.add('active');
+                }
+            });
+
+            // 英雄区视差
+            const heroFrame = document.querySelector('.hero-frame');
+            if (scrollY < viewportHeight) {
+                const heroProgress = scrollY / viewportHeight;
+                heroFrame.style.transform = `scale(${1 + heroProgress * 0.1})`;
+                heroFrame.style.opacity = 1 - heroProgress * 0.8;
+            }
+
+            prevScrollY = scrollY;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (isPlaying) {
+                    stopFilmSound();
+                }
+            }, 200);
+        });
+
+        updateParallax();
+
+        // ========== 平滑滚动 ==========
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ========== 胶片帧动画 ==========
+        const filmFrames = document.querySelectorAll('.film-frame');
+        let frameIndex = 0;
+        
+        setInterval(() => {
+            filmFrames.forEach((frame, i) => {
+                frame.classList.toggle('active', i === frameIndex);
+            });
+            frameIndex = (frameIndex + 1) % filmFrames.length;
+        }, 800);
+
+        // ========== 暗房模式切换（带闪光）==========
+        const darkroomToggle = document.getElementById('darkroomToggle');
+        const darkroomFlash = document.getElementById('darkroomFlash');
+        let isDarkroom = false;
+        
+        darkroomToggle.addEventListener('click', () => {
+            isDarkroom = !isDarkroom;
+            document.body.setAttribute('data-theme', isDarkroom ? 'darkroom' : '');
+            darkroomToggle.classList.toggle('active');
+            darkroomToggle.textContent = isDarkroom ? '⚫' : '⚪';
+            darkroomToggle.title = isDarkroom ? '切换彩色模式' : '切换暗房模式';
+            
+            // 闪光效果
+            darkroomFlash.classList.remove('flash-active');
+            void darkroomFlash.offsetWidth; // 强制重绘
+            darkroomFlash.classList.add('flash-active');
+            setTimeout(() => {
+                darkroomFlash.classList.remove('flash-active');
+            }, 600);
+        });
+
+        // ========== 页面隐藏时清理 ==========
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isPlaying) {
+                stopFilmSound();
+            }
+        });
+    </script>
+
+</body>
+</html>

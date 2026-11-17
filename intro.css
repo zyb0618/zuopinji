@@ -1,0 +1,239 @@
+/* ========== 开场 Intro 播放层 · 胶片档案 ========== */
+
+#introLayer {
+    position: fixed;
+    inset: 0;
+    z-index: 10010;
+    background: #000;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#introLayer.leaving {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#introVideo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1);
+    filter: blur(0);
+    transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 1.6s ease;
+}
+
+#introLayer.leaving #introVideo {
+    transform: scale(1.05);
+    filter: blur(6px);
+}
+
+/* 播放失败时的手动播放按钮 */
+.intro-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 200, 0, 0.6);
+    background: rgba(12, 12, 12, 0.55);
+    color: #FFC800;
+    font-size: 30px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: background 0.3s, transform 0.3s;
+    z-index: 3;
+}
+
+.intro-play-btn:hover {
+    background: rgba(255, 200, 0, 0.18);
+    transform: translate(-50%, -50%) scale(1.06);
+}
+
+.intro-play-btn.visible {
+    display: flex;
+    animation: introPlayPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes introPlayPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 200, 0, 0.35); }
+    50% { box-shadow: 0 0 0 18px rgba(255, 200, 0, 0); }
+}
+
+/* 顶部右侧：声音开关 */
+.intro-sound-btn {
+    position: absolute;
+    top: max(20px, env(safe-area-inset-top));
+    right: max(24px, env(safe-area-inset-right));
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(12, 12, 12, 0.45);
+    border: 1px solid rgba(255, 200, 0, 0.35);
+    color: #FFC800;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.8s ease 1.2s, background 0.3s, border-color 0.3s;
+}
+
+.intro-sound-btn.show { opacity: 1; }
+
+.intro-sound-btn:hover {
+    background: rgba(255, 200, 0, 0.15);
+    border-color: rgba(255, 200, 0, 0.7);
+}
+
+/* 右下角：跳过 */
+.intro-skip-btn {
+    position: absolute;
+    bottom: max(34px, calc(env(safe-area-inset-bottom) + 24px));
+    right: max(24px, env(safe-area-inset-right));
+    z-index: 3;
+    padding: 12px 22px;
+    background: transparent;
+    border: 1px solid rgba(232, 223, 209, 0.3);
+    color: rgba(232, 223, 209, 0.75);
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.8s ease, transform 0.8s ease,
+                background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.intro-skip-btn.show {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s ease 2.2s, transform 0.8s ease 2.2s,
+                background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.intro-skip-btn:hover {
+    background: rgba(232, 223, 209, 0.12);
+    color: #e8dfd1;
+    border-color: rgba(232, 223, 209, 0.65);
+}
+
+/* 底部：35mm 片带进度条 */
+.intro-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    height: 26px;
+    background: rgba(0, 0, 0, 0.55);
+    border-top: 1px solid rgba(255, 200, 0, 0.25);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+}
+
+.intro-progress::before {
+    content: '';
+    position: absolute;
+    inset: 5px 8px;
+    background-image: repeating-linear-gradient(
+        to right,
+        transparent 0,
+        transparent 10px,
+        rgba(255, 200, 0, 0.22) 10px,
+        rgba(255, 200, 0, 0.22) 16px
+    );
+    pointer-events: none;
+}
+
+.intro-progress-fill {
+    position: relative;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(to right, #8a7400, #FFC800);
+    box-shadow: 0 0 8px rgba(255, 200, 0, 0.55);
+    transition: width 0.25s linear;
+}
+
+/* 声音被拦截时的呼吸提醒 */
+.intro-sound-btn.attention {
+    animation: soundPulse 1.6s ease-in-out infinite;
+    border-color: rgba(255, 200, 0, 0.85);
+}
+
+@keyframes soundPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 200, 0, 0.45); }
+    50% { box-shadow: 0 0 0 12px rgba(255, 200, 0, 0); }
+}
+
+/* 轻触开声提示 */
+.intro-hint {
+    position: absolute;
+    left: 50%;
+    bottom: max(96px, calc(env(safe-area-inset-bottom) + 84px));
+    transform: translateX(-50%);
+    z-index: 3;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 200, 0, 0.4);
+    background: rgba(12, 12, 12, 0.5);
+    color: rgba(232, 223, 209, 0.9);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease 1.5s;
+}
+
+.intro-hint.show { opacity: 1; }
+
+/* 手机竖屏：全幅显示 + 海报氛围背景 */
+@media (max-aspect-ratio: 4/5) {
+    #introLayer::before {
+        content: '';
+        position: absolute;
+        inset: -8%;
+        background: url('intro-poster.jpg') center / cover no-repeat;
+        filter: blur(38px) brightness(0.55) saturate(1.3);
+        z-index: 0;
+    }
+
+    #introVideo {
+        object-fit: contain;
+        z-index: 1;
+    }
+}
+
+/* 手机端微调 */
+@media (max-width: 768px) {
+    .intro-sound-btn {
+        padding: 8px 14px;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+    }
+
+    .intro-skip-btn {
+        padding: 10px 16px;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        bottom: max(40px, calc(env(safe-area-inset-bottom) + 28px));
+    }
+
+    .intro-progress { height: 22px; }
+}
