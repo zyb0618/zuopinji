@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>赵艺博 — 胶片档案</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <!-- 分享卡片 -->
+    <meta name="description" content="赵艺博的个人作品集：广告设计、数字影像、动态图形与 AIGC 创作。以项目验证想法，用作品说话。">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="胶片档案">
+    <meta property="og:title" content="赵艺博 — 胶片档案">
+    <meta property="og:description" content="广告设计、数字影像、动态图形与 AIGC 创作。以项目验证想法，用作品说话。">
+    <meta property="og:url" content="https://yibozhao.ok.kimi.link/">
+    <meta property="og:image" content="https://yibozhao.ok.kimi.link/og-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="赵艺博 — 胶片档案">
+    <meta name="twitter:description" content="广告设计 · 数字影像 · 动态图形作品集。">
+    <meta name="twitter:image" content="https://yibozhao.ok.kimi.link/og-card.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=Noto+Serif+SC:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="site.css">
+    <script type="importmap">
+        { "imports": { "three": "./vendor/three.module.js" } }
+    </script>
+</head>
+<body>
+
+    <div id="scrollProgress"></div>
+    <div id="cursorDot"></div>
+    <div id="cursorRing"></div>
+
+    <!-- 导航 -->
+    <header class="site-header" id="siteHeader">
+        <a class="brand" href="#home"><span class="dot"></span>赵艺博<small>YIBO ZHAO®</small></a>
+        <nav class="main-nav">
+            <a href="#home" class="active">首页 <span class="en">Index</span></a>
+            <a href="#about">档案 <span class="en">Profile</span></a>
+            <a href="#works">作品 <span class="en">Works</span></a>
+            <a href="#contact">联络 <span class="en">Contact</span></a>
+        </nav>
+        <span class="header-meta mono">Nanjing, CN — 2026</span>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+        <div class="hero-meta mono">
+            <span>Personal Archive — Vol.01</span>
+            <span><i class="rec-dot"></i>Advertising · Film · Motion</span>
+            <span>EST. 2026</span>
+        </div>
+
+        <h1 class="hero-title">
+            <span class="cn reveal-clip">赵艺博<span class="reg">®</span></span>
+            <span class="en reveal-clip" style="--d:.12s"><button class="star" id="kodakStar" type="button" aria-label="触发柯达时刻彩蛋" title="点我有彩蛋">✳</button>Film Archive</span>
+        </h1>
+
+        <div class="hero-grid">
+            <ul class="hero-roles reveal" style="--d:.2s">
+                <li>广告设计</li>
+                <li>数字影像</li>
+                <li>动态图形</li>
+                <li>AIGC 创作</li>
+            </ul>
+            <div class="reveal" style="--d:.3s">
+                <p class="hero-desc">南京传媒学院广告学专业。从策划、拍摄到剪辑独立完成，习惯用项目验证想法，用作品说话——每一段文案与每一帧画面，都值得像胶片一样被认真对待。</p>
+                <div class="hero-cta">
+                    <a class="btn magnetic" href="#works">查看作品 <span class="arr">↗</span></a>
+                    <a class="btn ghost magnetic" href="#awards">浏览荣誉 <span class="arr">↗</span></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 互动 3D：8mm 放映机 -->
+        <div class="hero-3d" id="hero3dStage" role="button" tabindex="0" aria-pressed="false" aria-label="互动 8mm 放映机：拖动旋转，点击开关放映，双击触发彩蛋">
+            <canvas id="hero3dCanvas"></canvas>
+            <div class="hero-3d-badge mono" aria-hidden="true"><i></i><span id="projectorStatus">STANDBY · 点击放映</span></div>
+            <span class="hero-3d-hint mono">拖动旋转 · 点击放映 · 双击 / 点 ✳ 有彩蛋</span>
+        </div>
+
+        <!-- 胶片走马 -->
+        <div class="filmstrip" aria-label="作品胶片走马">
+            <div class="strip-track" id="stripTrack">
+                <figure><img src="project1.webp" alt="光影叙事"></figure>
+                <figure><img src="project2.webp" alt="显影时间"></figure>
+                <figure><img src="project3.webp" alt="帧间记忆"></figure>
+                <figure><img src="project4.webp" alt="城市显影"></figure>
+                <figure><img src="1.jpg" alt="肖像"></figure>
+            </div>
+        </div>
+
+        <!-- 黄色跑马灯 -->
+        <div class="marquee" aria-hidden="true">
+            <div class="marquee-track" id="marqueeTrack">
+                <span>Portfolio 2026 <i class="m-star">✳</i> 广告设计 <i class="m-star">✳</i> 数字影像 <i class="m-star">✳</i> 动态图形 <i class="m-star">✳</i> Copywriting <i class="m-star">✳</i> Directing <i class="m-star">✳</i> AIGC <i class="m-star">✳</i></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 档案 -->
+    <section class="section" id="about">
+        <div class="section-head">
+            <span class="no mono">(01)</span>
+            <span class="label">档案 / Profile</span>
+            <span class="rule"></span>
+            <span class="tag mono">Since 2003</span>
+        </div>
+
+        <h2 class="about-statement reveal">在这个数字化时代，我依然钟情于带有温度的事物——<mark>用项目验证想法，用作品说话。</mark></h2>
+
+        <div class="about-grid">
+            <div class="portrait-wrap reveal">
+                <img src="1.jpg" alt="赵艺博肖像">
+                <span class="portrait-caption">NANJING · 2025.03.15</span>
+            </div>
+            <div class="about-text reveal" style="--d:.15s">
+                <p>每一段文案、每一帧画面，都像是暗房里慢慢显影的胶片，需要耐心等待，才能看到最终的影像。</p>
+                <p><strong>我是一名南京传媒学院广告学专业学生</strong>，在校期间做过微电影社团社长，也带过志愿协会的媒体部门，从策划到拍摄到剪辑都能独立完成。</p>
+                <p>工作之余，我喜欢用胶片相机记录生活，在暗房里冲洗照片，感受那种不可复制的、带有偶然性的美。</p>
+                <div class="skill-list" id="skillList">
+                    <span data-skill="Copywriting" data-desc="从品牌 slogan 到长文案，擅长把策略翻译成有温度的表达。实习作品文案被二十余家主流媒体转载。">Copywriting</span><span data-skill="Content Planning" data-desc="选题策划与内容结构搭建，覆盖乡村振兴、非遗文化、城市纪实等题材。">Content Planning</span><span data-skill="Creative Conception" data-desc="以广告学方法论做创意发想，服务社会、让创意落地是核心准则。">Creative Conception</span><span data-skill="Photography" data-desc="胶片与数码双修，500px 签约创作者，偏爱自然光影与市井百态。">Photography</span><span data-skill="Video Editing" data-desc="剪辑节奏与叙事逻辑并重，能独立完成从素材到成片的全流程。">Video Editing</span><span data-skill="Platform Operation" data-desc="抖音账号「拆营销」主理人，拆解营销案例，实践平台内容运营。">Platform Operation</span><span data-skill="Trend Insight" data-desc="持续追踪传播趋势与平台机制，把洞察转化为可执行的选题。">Trend Insight</span><span data-skill="AIGC Creation" data-desc="AI 影像生成与传统工艺融合，皮影戏短片从全国 7726 件作品中脱颖而出并入展 WAIC。">AIGC Creation</span>
+                </div>
+                <div class="skill-detail" id="skillDetail" hidden>
+                    <span class="skill-detail-title mono" id="skillDetailTitle"></span>
+                    <p id="skillDetailDesc"></p>
+                </div>
+                <p class="skill-hint mono">↑ 点击标签查看详情</p>
+            </div>
+        </div>
+
+        <div class="stats reveal">
+            <div class="stat"><b>50<i>万+</i></b><span>《光影叙事》全网播放</span></div>
+            <div class="stat"><b>100<i>万+</i></b><span>国际在线实习作品 · 全网播放</span></div>
+            <div class="stat"><b>20<i>+</i></b><span>主流媒体转载</span></div>
+            <div class="stat"><b>40<i>+</i></b><span>竞赛奖项 · 学院公众号报道</span></div>
+        </div>
+
+        <a class="press-card reveal" href="https://mp.weixin.qq.com/s/EKhKLv-CSVaajQyErDbIbQ" target="_blank" rel="noopener">
+            <span class="press-badge mono">学院报道</span>
+            <div class="press-body">
+                <h3>「以热爱为笔，让创意落地」</h3>
+                <p>南京传媒学院新闻传播学院公众号《南传新发现》专题报道：四十余项竞赛奖项、专业第三、WAIC 展区入展——一名青年创作者的阶段性成长答卷。</p>
+            </div>
+            <span class="press-arrow">↗</span>
+        </a>
+    </section>
+
+    <!-- 作品 -->
+    <section class="section works on-dark" id="works">
+        <div class="section-head">
+            <span class="no mono">(02)</span>
+            <span class="label">精选作品 / Selected Works</span>
+            <span class="rule"></span>
+            <span class="tag mono">2022 — 2026</span>
+        </div>
+
+        <a class="work-row reveal" href="https://www.xinpianchang.com/a13389649?from=webShare&channel=copyLink" target="_blank" rel="noopener" data-img="project1.webp">
+            <div class="work-inner">
+                <span class="work-no" data-year="2025">01</span>
+                <div>
+                    <h3 class="work-title">光影叙事<span class="en">Narrative of Light</span></h3>
+                    <p class="work-desc">取景甘肃兰州的文艺电影短片。担任编剧与灯光设计，全网播放量突破 50 万，获新片场金雀奖校园精英大赛最佳编剧、摄影二等奖，及松下 GOV 最佳编剧、最佳影片等荣誉。</p>
+                </div>
+                <div class="work-side">
+                    <span class="work-meta">编剧 / 灯光设计</span>
+                    <span class="work-year">2025</span>
+                    <span class="work-arrow">↗</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="work-row reveal" href="https://city.cri.cn/2026-03-18/d1fddc13-b792-4d52-6606-48f137d5430f.html" target="_blank" rel="noopener" data-img="project2.webp">
+            <div class="work-inner">
+                <span class="work-no" data-year="2026">02</span>
+                <div>
+                    <h3 class="work-title">显影时间<span class="en">Developing Time</span></h3>
+                    <p class="work-desc">国际在线实习期间参与乡村振兴云南特色产业纪实项目，负责选题、文案与剪辑。全平台播放量破百万，被二十余家主流媒体转载，实现乡村文化内容破圈传播。</p>
+                </div>
+                <div class="work-side">
+                    <span class="work-meta">选题 / 文案 / 剪辑</span>
+                    <span class="work-year">2026</span>
+                    <span class="work-arrow">↗</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="work-row reveal" href="https://www.xinpianchang.com/a13672812" target="_blank" rel="noopener" data-img="project3.webp">
+            <div class="work-inner">
+                <span class="work-no" data-year="2026">03</span>
+                <div>
+                    <h3 class="work-title">帧间记忆<span class="en">Memory Between Frames</span></h3>
+                    <p class="work-desc">聚焦皮影戏非遗文化的数字化科普短片。担任导演与 AIGCer，融合国风虚拟场景与传统皮影元素，以年轻化影像语言实现传统文化与 AI 创作的创新融合。</p>
+                </div>
+                <div class="work-side">
+                    <span class="work-meta">导演 / AIGC</span>
+                    <span class="work-year">2026</span>
+                    <span class="work-arrow">↗</span>
+                </div>
+            </div>
+        </a>
+
+        <a class="work-row reveal" href="https://500px.com.cn/yibozhao" target="_blank" rel="noopener" data-img="project4.webp">
+            <div class="work-inner">
+                <span class="work-no" data-year="2022 —">04</span>
+                <div>
+                    <h3 class="work-title">城市显影<span class="en">Urban Development</span></h3>
+                    <p class="work-desc">城市人文、街巷纪实与自然风光原创实拍。以镜头捕捉日常光影与市井百态，在行摄中定格时光碎片，沉淀专属的影像审美与创作风格。</p>
+                </div>
+                <div class="work-side">
+                    <span class="work-meta">摄影 / 纪实</span>
+                    <span class="work-year">2022 —</span>
+                    <span class="work-arrow">↗</span>
+                </div>
+            </div>
+        </a>
+
+        <div id="workPreview"><img src="project1.webp" alt=""></div>
+    </section>
+
+    <!-- 荣誉 -->
+    <section class="section" id="awards">
+        <div class="section-head">
+            <span class="no mono">(03)</span>
+            <span class="label">荣誉墙 / Honors</span>
+            <span class="rule"></span>
+            <a class="tag mono awards-all-link" href="awards.html">全部 18 项 ↗</a>
+        </div>
+        <div class="award-grid">
+            <figure class="award-card reveal" data-full="awards/dongfang-g1.jpg" tabindex="0">
+                <div class="award-img"><img src="awards/dongfang-g1.jpg" alt="东方设计奖全国一等奖证书" loading="lazy"></div>
+                <figcaption><b>东方设计奖</b><span class="award-level national">全国一等奖</span></figcaption>
+            </figure>
+            <figure class="award-card reveal" style="--d:.06s" data-full="awards/xiangcun-g2.jpg" tabindex="0">
+                <div class="award-img"><img src="awards/xiangcun-g2.jpg" alt="乡村振兴短视频大赛全国二等奖证书" loading="lazy"></div>
+                <figcaption><b>乡村振兴知识科普暨短视频大赛</b><span class="award-level national">全国二等奖</span></figcaption>
+            </figure>
+            <figure class="award-card reveal" style="--d:.12s" data-full="awards/haochuangyi-g3.jpg" tabindex="0">
+                <div class="award-img"><img src="awards/haochuangyi-g3.jpg" alt="中国好创意全国三等奖证书" loading="lazy"></div>
+                <figcaption><b>中国好创意数字艺术设计大赛</b><span class="award-level national">全国三等奖</span></figcaption>
+            </figure>
+            <figure class="award-card reveal" style="--d:.18s" data-full="awards/haochuangyi-s1.jpg" tabindex="0">
+                <div class="award-img"><img src="awards/haochuangyi-s1.jpg" alt="中国好创意江苏赛区一等奖证书" loading="lazy"></div>
+                <figcaption><b>中国好创意数字艺术设计大赛</b><span class="award-level provincial">江苏赛区一等奖</span></figcaption>
+            </figure>
+            <figure class="award-card reveal" style="--d:.24s" data-full="awards/daguangshi-g.jpg" tabindex="0">
+                <div class="award-img"><img src="awards/daguangshi-g.jpg" alt="大广赛全国优秀奖证书" loading="lazy"></div>
+                <figcaption><b>全国大学生广告艺术大赛</b><span class="award-level national">全国优秀奖</span></figcaption>
+            </figure>
+            <figure class="award-card reveal" style="--d:.3s" data-full="awards/icad-silver.jpg" tabindex="0">
+                <div class="award-img"><img src="awards/icad-silver.jpg" alt="ICAD国际当代青年美术设计大赛银奖证书" loading="lazy"></div>
+                <figcaption><b>ICAD 国际当代青年美术设计大赛</b><span class="award-level silver">银奖</span></figcaption>
+            </figure>
+        </div>
+        <p class="awards-mobile-hint mono" aria-hidden="true">Swipe · 左右滑动查看高光证书</p>
+    </section>
+
+    <!-- 联络 -->
+    <section class="section contact" id="contact">
+        <div class="section-head">
+            <span class="no mono">(04)</span>
+            <span class="label">联络 / Contact</span>
+            <span class="rule"></span>
+            <span class="tag mono">Open for Projects</span>
+        </div>
+        <h2 class="contact-big reveal">让我们<br>搞点创作。</h2>
+        <p class="contact-en reveal" style="--d:.1s">Let’s make something worth developing.</p>
+        <p class="contact-note reveal" style="--d:.15s">有项目合作的想法，或者只是想聊聊胶片与影像？随时给我写信。</p>
+        <div class="contact-actions reveal" style="--d:.2s">
+            <a class="btn magnetic" href="mailto:2027218096@qq.com">2027218096@qq.com <span class="arr">↗</span></a>
+        </div>
+        <div class="contact-actions link-row reveal" style="--d:.22s">
+            <a class="btn ghost magnetic" href="https://v.douyin.com/SYMMhgSlU_U/" target="_blank" rel="noopener">抖音 · 拆营销 <span class="arr">↗</span></a>
+            <a class="btn ghost magnetic" href="https://www.xinpianchang.com/u15523439?from=share&channel=Link&type=URL&xpcApp=xpc" target="_blank" rel="noopener">新片场个人主页 <span class="arr">↗</span></a>
+        </div>
+        <div class="copy-chips reveal" style="--d:.25s">
+            <button class="copy-chip" data-copy="zyb16651610618"><span class="k">WeChat</span><span class="v">zyb16651610618</span></button>
+            <button class="copy-chip" data-copy="2027218096"><span class="k">QQ</span><span class="v">2027218096</span></button>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <span class="mono">© 2026 Yibo Zhao · Developed in the darkroom</span>
+        <span class="mono">All rights reserved · EST. 35mm</span>
+        <a class="mono" href="#home">回到顶部 ↑</a>
+    </footer>
+
+    <!-- 证书放大 -->
+    <div id="lightbox" role="dialog" aria-label="证书大图">
+        <button id="lightboxClose" aria-label="关闭">✕ ESC</button>
+        <figure>
+            <img id="lightboxImg" src="" alt="证书大图">
+            <figcaption id="lightboxCaption" class="mono"></figcaption>
+        </figure>
+    </div>
+
+    <script src="site.js" defer></script>
+    <script type="module" src="hero3d.js"></script>
+</body>
+</html>
